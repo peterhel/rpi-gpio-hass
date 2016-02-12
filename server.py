@@ -5,10 +5,28 @@ A simple echo server that handles exceptions
 """
 
 import socket
+import RPi.GPIO as GPIO
+
+GPIO.setmode(GPIO.BCM)
+GPIO.setup([2, 3], GPIO.OUT)
 
 def handleData(data):
-   print data
-   return data
+  print data
+  dataString = data.split( )
+  pin = int(dataString[1])
+  acn = str(dataString[0])
+
+  if acn == 'state':
+    print GPIO.input(pin)
+    return str(0 if GPIO.input(pin) == 1 else 1)
+  elif acn == 'on':
+    GPIO.output(pin, True)
+    print 'Turned on'
+    return str(0)
+  elif acn == 'off':
+    GPIO.output(pin, False)
+    print 'Turned off'
+    return str(1)
 
 host = ''
 port = 50000
